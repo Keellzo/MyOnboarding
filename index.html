@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyOnboarding</title>
+    <style>
+      :root {
+        --primary-color: #005fa5;
+        --white: #fff;
+        --light-gray: #f5f5f5;
+        --medium-gray: #e0e0e0;
+        --dark-gray: #333;
+        --sidebar-width: 250px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--white);
+        color: var(--dark-gray);
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      header {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        position: fixed;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo-placeholder {
+        width: 180px;
+        height: 30px;
+        background-color: var(--white);
+        margin-right: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        padding: 5px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo-placeholder img {
+        width: 150px;
+        height: auto;
+        display: block;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+      }
+
+      nav ul li {
+        margin-left: 2rem;
+      }
+
+      nav ul li a {
+        color: var(--white);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+
+      nav ul li a:hover,
+      nav ul li a.active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .container {
+        display: flex;
+        flex: 1;
+        margin-top: 80px;
+      }
+
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--light-gray);
+        padding: 1.5rem;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        position: fixed;
+        top: 80px;
+        bottom: 0;
+        overflow-y: auto;
+      }
+
+      .timeline-item {
+        padding-left: 1.5rem;
+        position: relative;
+        margin-bottom: 1rem;
+        cursor: pointer;
+      }
+
+      .timeline-item input {
+        margin-right: 0.5rem;
+      }
+
+      .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        padding: 2rem;
+      }
+
+      .content-section {
+        display: none;
+      }
+
+      .content-section.active {
+        display: block;
+      }
+
+      .pulse-check {
+        background-color: var(--light-gray);
+        padding: 1rem;
+        margin-top: 2rem;
+        border-radius: 8px;
+        display: none;
+      }
+
+      .timeline {
+        position: relative;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 20px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: var(--primary-color);
+      }
+
+      .header-title {
+        position: absolute;
+        left: 55%;
+        transform: translateX(-50%);
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--white);
+        pointer-events: none;
+      }
+
+      .timeline-item {
+        position: relative;
+        padding-left: 45px;
+        padding-bottom: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .always-visible-section {
+        display: block;
+        margin-bottom: 2rem;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: 16px;
+        top: 5px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        transition: all 0.3s;
+      }
+
+      .timeline-item:hover::before {
+        transform: scale(1.5);
+      }
+
+      .timeline-item.active {
+        font-weight: bold;
+      }
+
+      .timeline-item.active::before {
+        width: 14px;
+        height: 14px;
+        left: 14px;
+        top: 3px;
+        background-color: var(--primary-color);
+      }
+
+      .timeline-date {
+        font-size: 0.8rem;
+        color: var(--dark-gray);
+        opacity: 0.7;
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+      }
+
+      .page-title {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 0.5rem;
+      }
+
+      .content-section {
+        margin-bottom: 2rem;
+      }
+
+      .section-title {
+        margin: 2rem 0 1rem;
+        color: var(--primary-color);
+      }
+
+      .card {
+        background-color: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .card h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .btn {
+        background-color: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-weight: 500;
+      }
+
+      .btn:hover {
+        background-color: #004c8c;
+      }
+
+      .checklist {
+        list-style: none;
+        margin: 1rem 0;
+      }
+
+      .checklist li {
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .checklist input[type="checkbox"] {
+        margin-right: 0.8rem;
+        width: 18px;
+        height: 18px;
+        accent-color: var(--primary-color);
+      }
+
+      .milestone {
+        background-color: var(--light-gray);
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .milestone h4 {
+        margin-bottom: 0.5rem;
+      }
+
+      .content-timeline {
+        position: relative;
+        margin: 2rem 0;
+        padding-left: 40px;
+      }
+
+      .content-timeline::before {
+        content: "";
+        position: absolute;
+        left: 15px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: var(--medium-gray);
+      }
+
+      .content-timeline-item {
+        position: relative;
+        padding-bottom: 1.5rem;
+      }
+
+      .onboarding-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .onboarding-card {
+        flex: 1 1 calc(33.333% - 2rem);
+        background-color: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        min-width: 280px;
+        transition: transform 0.2s;
+      }
+
+      .onboarding-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .onboarding-card h4 {
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
+        color: var(--primary-color);
+      }
+
+      .onboarding-card p {
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .add-onboarding-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 0.8rem 1.4rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 50px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        z-index: 999;
+      }
+
+      .add-onboarding-btn:hover {
+        background-color: #004c8c;
+      }
+
+      .content-timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -25px;
+        top: 0;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+      }
+
+      .pulse-check {
+        margin: 1.5rem 0;
+        background-color: var(--light-gray);
+        padding: 1rem;
+        border-radius: 8px;
+      }
+
+      .pulse-check h3 {
+        margin-bottom: 1rem;
+      }
+
+      .slider-container {
+        display: flex;
+        align-items: center;
+        margin: 1rem 0;
+      }
+
+      .slider-container label {
+        margin-right: 1rem;
+        min-width: 150px;
+      }
+
+      .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 4px;
+        background: var(--medium-gray);
+        outline: none;
+      }
+
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        cursor: pointer;
+      }
+
+      .slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        cursor: pointer;
+      }
+
+      .progress-container {
+        margin-bottom: 1.5rem;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 20px;
+        background-color: var(--medium-gray);
+        border-radius: 10px;
+        margin: 1rem 0;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background-color: var(--primary-color);
+        border-radius: 10px;
+      }
+
+      .logo-banner {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: 2rem;
+      }
+
+      .banner-container {
+        width: 100%;
+        background-color: var(--primary-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .banner-placeholder {
+        width: 100%;
+        height: 150px;
+        background-color: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.2rem;
+      }
+
+      .banner-image {
+        width: 100%;
+        height: 500px;
+        display: block;
+      }
+
+      @media (max-width: 992px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          position: static;
+          height: auto;
+          margin-top: 70px;
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 1.5rem;
+          margin-top: 0;
+        }
+
+        .timeline::before {
+          left: 10px;
+        }
+
+        .timeline-item {
+          padding-left: 30px;
+        }
+
+        .timeline-item::before {
+          left: 6px;
+        }
+
+        .timeline-item.active::before {
+          left: 4px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 1rem;
+        }
+
+        .logo-container {
+          margin-bottom: 1rem;
+        }
+
+        nav ul {
+          justify-content: space-between;
+        }
+
+        nav ul li {
+          margin-left: 0;
+        }
+
+        nav ul li a {
+          padding: 0.4rem 0.8rem;
+          font-size: 0.9rem;
+        }
+
+        .container {
+          margin-top: 120px;
+        }
+
+        .sidebar {
+          margin-top: 120px;
+        }
+      }
+
+      .main-content ul,
+      .main-content ol {
+        padding-left: 1.5rem;
+        margin-left: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo-container">
+        <div class="logo-placeholder">
+          <img src="HB_SMALL_RGB.jpg" />
+        </div>
+      </div>
+      <h1>My Onboarding</h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="#" class="nav-link active" data-page="employee"
+              >Ny Medarbetare</a
+            >
+          </li>
+          <li><a href="#" class="nav-link" data-page="manager">Chef</a></li>
+          <li><a href="#" class="nav-link" data-page="mentor">Mentor</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="container">
+      <!-- Employee Page -->
+      <div id="employee-page" class="page active">
+        <div class="sidebar">
+          <h3>Din onboarding-resa</h3>
+          <div class="timeline">
+            <div class="timeline-item active" data-section="welcome">
+              <div class="timeline-date">Dag 1</div>
+              <div class="timeline-title">Välkommen</div>
+            </div>
+            <div class="timeline-item" data-section="bank-info">
+              <div class="timeline-date">Dag 1-2</div>
+              <div class="timeline-title">Om Handelsbanken</div>
+            </div>
+            <div class="timeline-item" data-section="practical">
+              <div class="timeline-date">Dag 3-5</div>
+              <div class="timeline-title">Praktiska guider</div>
+            </div>
+            <div class="timeline-item" data-section="department">
+              <div class="timeline-date">Vecka 2</div>
+              <div class="timeline-title">Avdelningsspecifikt</div>
+            </div>
+            <div class="timeline-item" data-section="meetings">
+              <div class="timeline-date">Vecka 2-3</div>
+              <div class="timeline-title">Introduktionsmöten</div>
+            </div>
+            <div class="timeline-item" data-section="team">
+              <div class="timeline-date">Vecka 3-4</div>
+              <div class="timeline-title">Teamets syfte</div>
+            </div>
+            <div class="timeline-item" data-section="team">
+              <div class="timeline-date">Månad 3-6</div>
+              <div class="timeline-title">Lorem ipsum</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <h2 class="page-title">Onboarding för nya medarbetare</h2>
+
+          <div class="banner-container">
+            <img src="banner-image.jpg" class="banner-image" />
+          </div>
+
+          <div id="welcome" class="content-section">
+            <div class="card">
+              <h3>Välkommen till Handelsbanken!</h3>
+              <p>
+                Vi är glada att ha dig som en del av vårt team. Den här portalen
+                kommer att guida dig genom din onboarding-resa och hjälpa dig
+                att bekanta dig med vår organisation.
+              </p>
+              <p>
+                Här hittar du allt du behöver veta för att komma igång och bli
+                framgångsrik i din nya roll. Följ stegen i tidslinjen till
+                vänster för att navigera genom din onboarding-process.
+              </p>
+              <p>
+                För att göra din start så smidig som möjligt har vi även tagit
+                fram en
+                <strong>videoguide för nyanställda</strong>. I den får du en
+                personlig introduktion från våra medarbetare, inblick i vår
+                kultur samt praktiska tips.
+              </p>
+              <ul>
+                <li>Vad du kan förvänta dig första veckan</li>
+                <li>Vem du vänder dig till för support</li>
+                <li>Hur vi arbetar tillsammans</li>
+              </ul>
+              <button class="btn">Se videoguide</button>
+            </div>
+
+            <div class="card">
+              <h3>Plan för första dagen</h3>
+              <p>
+                Din första dag är viktig för att du ska känna dig välkommen och
+                trygg i din nya roll. Här är vad du och din chef kommer att göra
+                idag:
+              </p>
+              <ul>
+                <li>📍 Rundtur på kontoret tillsammans med din chef</li>
+                <li>🧑‍🤝‍🧑 Presentation av teamet och arbetsmiljön</li>
+                <li>🛟 Genomgång av säkerhetsrutiner</li>
+                <li>🎯 Kort samtal om dina förväntningar och mål</li>
+                <li>🍽️ Lunch med chefen och en kollega</li>
+              </ul>
+              <p>
+                Fråga gärna när som helst – din chef finns där för att stötta
+                dig under hela dagen.
+              </p>
+            </div>
+          </div>
+
+          <div id="bank-info" class="content-section">
+            <h3 class="section-title">Om Handelsbanken</h3>
+            <div class="card">
+              <h3>Bankens historia</h3>
+              <p>
+                Handelsbanken grundades 1871 i Stockholm, Sverige. Sedan dess
+                har vi vuxit till att bli en av de mest solida och framgångsrika
+                bankerna i Norden och på andra håll, med stark närvaro i Europa.
+              </p>
+              <p>
+                Vår decentraliserade strategi och långsiktiga perspektiv har
+                varit nyckeln till vår framgång i över 150 år.
+              </p>
+            </div>
+
+            <div class="card">
+              <h3>Kärnvärden</h3>
+              <ul>
+                <li>Kundfokus</li>
+                <li>Långsiktighet</li>
+                <li>Decentralisering</li>
+                <li>Kostnadsmedvetenhet</li>
+                <li>Stark riskkultur</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3>Handelsbanken i ett nötskal</h3>
+              <p>
+                I denna videoguide får du en snabb och inspirerande genomgång av
+                bankens historia, våra kärnvärden och hur vi skiljer oss från
+                andra aktörer på marknaden.
+              </p>
+              <ul>
+                <li>Hur vår decentraliserade modell fungerar</li>
+                <li>Vårt engagemang i hållbarhet och samhällsansvar</li>
+                <li>Hur du blir en del av vår kultur</li>
+              </ul>
+              <p>
+                Videon är ca 4 minuter lång och passar perfekt att se på första
+                dagen. Den ger dig ett helikopterperspektiv på vår verksamhet
+                och förberedelse inför din nya roll.
+              </p>
+              <button class="btn">Se videoguide</button>
+            </div>
+
+            <div class="card">
+              <h3>Vad är en bank?</h3>
+              <p>
+                En bank är ett finansiellt institut som tar emot insättningar
+                från allmänheten och skapar krediter. Vi fungerar som
+                mellanhänder mellan sparare och låntagare och tillhandahåller
+                ett brett utbud av finansiella tjänster inklusive lån,
+                sparkonton och betalningstjänster.
+              </p>
+              <p>
+                På Handelsbanken fokuserar vi på traditionell bankverksamhet med
+                stark betoning på kundrelationer och ansvarsfull bankverksamhet.
+              </p>
+            </div>
+
+            <div class="card">
+              <h3>Extra resurser</h3>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
+                vel erat nec libero posuere rhoncus. Duis vulputate justo nec
+                tellus tempor tincidunt. Nam ut suscipit nulla. Donec rutrum
+                nunc vitae nisi vulputate lacinia.
+              </p>
+              <ul>
+                <li>Fördjupad material om Handelsbankens strategi</li>
+                <li>Artiklar från ledningen</li>
+                <li>Introduktionsquiz för nyanställda</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="practical" class="content-section">
+            <h3 class="section-title">Praktiska guider</h3>
+            <div class="card">
+              <h3>Hur stämplar man in?</h3>
+              <p>
+                Använd ditt passerkort för att komma in vid entréterminalerna.
+                Håll kortet mot läsaren när du anländer och knappa in din kod.
+                Om du glömmer koden så kontaktar du närmsta chef.
+              </p>
+              <button class="btn">Se handledning</button>
+            </div>
+
+            <div class="card">
+              <h3>Navigera intranätet</h3>
+              <p>
+                Vårt intranät är din centrala plats för information, resurser
+                och verktyg. Kom åt det genom att gå till
+                intranet.handelsbanken.internal från vilken arbetsdator som
+                helst.
+              </p>
+              <p>Viktiga sektioner inkluderar:</p>
+              <ul>
+                <li>Nyheter & Uppdateringar</li>
+                <li>Avdelningsresurser</li>
+                <li>HR Självservice</li>
+                <li>IT-support</li>
+              </ul>
+              <button class="btn">Ta en intranätstur</button>
+            </div>
+          </div>
+
+          <div id="department" class="content-section">
+            <h3 class="section-title">Avdelningsspecifikt innehåll</h3>
+            <div class="card">
+              <h3>Verktyg & Resurser</h3>
+              <p>Bekanta dig med verktygen som används på din avdelning:</p>
+              <div class="milestone">
+                <h4>Jira</h4>
+                <p>
+                  Vårt system för ärendehantering och projektledning. Här kan du
+                  följa dina uppgifter och arbetsflöden.
+                </p>
+                <button class="btn">Jira-guide</button>
+              </div>
+              <div class="milestone">
+                <h4>Confluence</h4>
+                <p>
+                  Vår kunskapsbas och dokumentationsplattform där
+                  teamdokumentation, guider och processer lagras.
+                </p>
+                <button class="btn">Confluence-guide</button>
+              </div>
+              <h4>Dina milstolpar:</h4>
+              <ul class="checklist">
+                <li>
+                  <input type="checkbox" id="jira-milestone" />
+                  <label for="jira-milestone"
+                    >Skapa ditt första Jira-ärende</label
+                  >
+                </li>
+                <li>
+                  <input type="checkbox" id="confluence-milestone" />
+                  <label for="confluence-milestone"
+                    >Bidra till en Confluence-sida</label
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="meetings" class="content-section">
+            <div class="card">
+              <h3>Teamets introduktionsmöten</h3>
+              <div class="content-timeline">
+                <div class="content-timeline-item">
+                  <h4>Dag 1: Välkomstmöte</h4>
+                  <p>
+                    Möt teamet och få en övergripande introduktion till
+                    avdelningen.
+                  </p>
+                </div>
+                <div class="content-timeline-item">
+                  <h4>Dag 3: Projeköversikt</h4>
+                  <p>Lär dig om aktuella projekt och teamets prioriteringar.</p>
+                </div>
+                <div class="content-timeline-item">
+                  <h4>Vecka 2: Djupdykning i arbetsprocesser</h4>
+                  <p>
+                    Detaljerad genomgång av teamets arbetsmetoder och verktyg.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="team" class="content-section">
+            <div class="card">
+              <h3>Teamets syfte och projektbeskrivningar</h3>
+              <p>
+                Vårt team fokuserar på att leverera digitala lösningar som
+                förbättrar kundupplevelsen och effektiviserar interna processer.
+                Vi arbetar agilt och värdesätter innovation och samarbete.
+              </p>
+              <p>Aktuella projekt inkluderar:</p>
+              <ul>
+                <li>Förbättring av mobilapplikationen</li>
+                <li>Utveckling av en ny säkerhetslösning för nätbanken</li>
+                <li>Optimering av interna rapporteringsverktyg</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="feedback" class="content-section">
+            <div class="pulse-check">
+              <h3>Hur går det för dig?</h3>
+              <p>
+                Vi vill veta hur din onboarding går. Ta en minut för att dela
+                din upplevelse hittills.
+              </p>
+              <div class="slider-container">
+                <label>Jag känner mig välkommen:</label>
+                <input type="range" min="1" max="5" value="3" class="slider" />
+              </div>
+              <div class="slider-container">
+                <label>Jag förstår min roll:</label>
+                <input type="range" min="1" max="5" value="3" class="slider" />
+              </div>
+              <div class="slider-container">
+                <label>Jag har de verktyg jag behöver:</label>
+                <input type="range" min="1" max="5" value="3" class="slider" />
+              </div>
+              <button class="btn">Skicka återkoppling</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manager Page -->
+
+      <div id="manager-overview-page" class="page">
+        <div class="main-content">
+          <h2 class="page-title">Aktiva onboardingar</h2>
+
+          <div class="onboarding-row">
+            <div class="onboarding-card">
+              <h4>Anna Andersson</h4>
+              <p>Startdatum: 15 maj 2025</p>
+              <p>Status: 7/12 milstolpar genomförda</p>
+              <button class="btn" onclick="showManagerDetails()">
+                Visa detaljer
+              </button>
+            </div>
+
+            <div class="onboarding-card">
+              <h4>Erik Svensson</h4>
+              <p>Startdatum: 3 juni 2025</p>
+              <p>Status: 2/12 milstolpar genomförda</p>
+              <button class="btn">Visa detaljer</button>
+            </div>
+
+            <div class="onboarding-card">
+              <h4>Sara Nyberg</h4>
+              <p>Startdatum: 20 juni 2025</p>
+              <p>Status: Ej påbörjad</p>
+              <button class="btn">Visa detaljer</button>
+            </div>
+          </div>
+        </div>
+        <button class="add-onboarding-btn">+ Lägg till ny onboarding</button>
+      </div>
+
+      <div id="manager-page" class="page">
+        <div class="sidebar">
+          <h3>Chefsguide</h3>
+          <div class="timeline">
+            <div class="timeline-item active" data-section="before-day-one">
+              <div class="timeline-title">Före första dagen</div>
+            </div>
+            <div class="timeline-item" data-section="first-day">
+              <div class="timeline-title">Första dagen</div>
+            </div>
+            <div class="timeline-item" data-section="first-week">
+              <div class="timeline-title">Första veckan</div>
+            </div>
+            <div class="timeline-item" data-section="follow-up">
+              <div class="timeline-title">Uppföljning</div>
+            </div>
+            <div
+              class="timeline-item"
+              data-section="employee-progress"
+              style="display: none"
+            >
+              <div class="timeline-title">Medarbetarens framsteg</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <h2 class="page-title">Chefens onboarding-checklista</h2>
+
+          <div id="before-day-one" class="content-section">
+            <div class="card">
+              <h3>Före första dagen</h3>
+              <ul class="checklist">
+                <li>
+                  <input type="checkbox" id="welcome-email" />
+                  <label for="welcome-email">Skicka välkomstmail</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="access-card" />
+                  <label for="access-card">Beställ passerkort</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="equipment" />
+                  <label for="equipment"
+                    >Beställ laptop, mobiltelefon, headset och adaptrar</label
+                  >
+                </li>
+                <li>
+                  <input type="checkbox" id="desk" />
+                  <label for="desk">Förbered arbetsplats</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="team-notify" />
+                  <label for="team-notify"
+                    >Informera teamet om den nya medlemmen</label
+                  >
+                </li>
+                <li>
+                  <input type="checkbox" id="mentor" />
+                  <label for="mentor">Utse en mentor</label>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="first-day" class="content-section">
+            <div class="card">
+              <h3>Första dagen</h3>
+              <ul class="checklist">
+                <li>
+                  <input type="checkbox" id="office-tour" />
+                  <label for="office-tour"
+                    >Genomför rundtur på arbetsplatsen</label
+                  >
+                </li>
+                <li>
+                  <input type="checkbox" id="team-intro" />
+                  <label for="team-intro">Presentera för teamet</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="safety" />
+                  <label for="safety">Förklara säkerhetsrutiner</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="expectations" />
+                  <label for="expectations"
+                    >Gå igenom förväntningar och mål</label
+                  >
+                </li>
+                <li>
+                  <input type="checkbox" id="lunch" />
+                  <label for="lunch">Schemalägg lunch med teamet</label>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="first-week" class="content-section">
+            <div class="card">
+              <h3>Första veckan</h3>
+              <ul class="checklist">
+                <li>
+                  <input type="checkbox" id="one-on-one" />
+                  <label for="one-on-one">Håll första avstämningsmöte</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="intro-meetings" />
+                  <label for="intro-meetings"
+                    >Schemalägg introduktionsmöten med nyckelpersoner</label
+                  >
+                </li>
+                <li>
+                  <input type="checkbox" id="training" />
+                  <label for="training"
+                    >Säkerställ att grundläggande utbildning är
+                    schemalagd</label
+                  >
+                </li>
+                <li>
+                  <input type="checkbox" id="networks" />
+                  <label for="networks"
+                    >Informera om interna nätverk (t.ex. Handelsbanken IF,
+                    HT-young)</label
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="follow-up" class="content-section">
+            <div class="card">
+              <h3>Uppföljning</h3>
+              <ul class="checklist">
+                <li>
+                  <input type="checkbox" id="progress-meeting" />
+                  <label for="progress-meeting"
+                    >Håll uppföljningsmöte efter två veckor</label
+                  >
+                </li>
+                <li>
+                  <input type="checkbox" id="one-month" />
+                  <label for="one-month">Utvärdera första månaden</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="three-month" />
+                  <label for="three-month">Håll tremånadersuppföljning</label>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="employee-progress" class="always-visible-section">
+            <div class="card">
+              <h3>Medarbetarens onboarding-framsteg</h3>
+              <p>
+                Här kan du följa din medarbetares framsteg genom
+                onboarding-processen.
+              </p>
+              <div class="progress-container">
+                <h4>Anna Andersson</h4>
+                <p>Startdatum: 15 maj 2025</p>
+                <p>Genomförda milstolpar: 7/12</p>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 58%"></div>
+                </div>
+              </div>
+
+              <h4>Anpassade uppgifter och milstolpar</h4>
+              <p>Lägg till specifika uppgifter för din nya medarbetare:</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Mentor Page -->
+      <div id="mentor-page" class="page">
+        <div class="sidebar">
+          <h3>Mentorprogram</h3>
+          <div class="timeline">
+            <div class="timeline-item active" data-section="mentor-start">
+              <div class="timeline-title">Introduktion</div>
+            </div>
+            <div class="timeline-item" data-section="mentor-tasks">
+              <div class="timeline-title">Mentorskapets uppgifter</div>
+            </div>
+            <div class="timeline-item" data-section="mentor-examples">
+              <div class="timeline-title">Exempeluppgifter</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <h2 class="page-title">Mentorns verktyg och ansvar</h2>
+
+          <div id="mentor-start" class="content-section">
+            <div class="card">
+              <h3>Så blir du en bra mentor</h3>
+              <p>
+                Som mentor är du en viktig del av den nyanställdes resa. Ditt
+                stöd, vägledning och engagemang skapar trygghet och struktur.
+              </p>
+              <p>
+                Använd videoguider, egna erfarenheter och interna resurser för
+                att introducera kulturen och arbetssätten.
+              </p>
+              <button class="btn">Se videoguider</button>
+            </div>
+          </div>
+
+          <div id="mentor-tasks" class="content-section">
+            <div class="card">
+              <h3>Mentoransvar</h3>
+              <ul>
+                <li>Vara tillgänglig som stöd för den nyanställde</li>
+                <li>Introducera arbetskulturen och teamet</li>
+                <li>Vara en länk mellan nyanställd och övriga kollegor</li>
+                <li>Följa upp att introduktionsplanen följs</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="mentor-examples" class="content-section">
+            <div class="card">
+              <h3>Mina arbetsuppgifter som mentor</h3>
+              <ul class="checklist">
+                <li>
+                  <input type="checkbox" /> Identifiera behörigheter den
+                  nyanställde behöver
+                </li>
+                <li>
+                  <input type="checkbox" /> Beställ behörigheter tillsammans med
+                  nyanställd
+                </li>
+                <li><input type="checkbox" /> Boka avstämningsmöten</li>
+                <li><input type="checkbox" /> Skapa en test ticket</li>
+                <li><input type="checkbox" /> Följ upp introduktionsmoment</li>
+                <li>
+                  <input type="checkbox" /> Ge feedback och svara på frågor
+                </li>
+              </ul>
+              <button class="btn">Lägg till uppgift</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const navLinks = document.querySelectorAll(".nav-link");
+      const pages = document.querySelectorAll(".page");
+
+      navLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const pageId = link.getAttribute("data-page");
+
+          // Markera aktiv länk
+          navLinks.forEach((l) => l.classList.remove("active"));
+          link.classList.add("active");
+
+          // Visa rätt innehållssida
+          pages.forEach((p) => p.classList.remove("active"));
+          const currentPage = document.getElementById(`${pageId}-page`);
+          if (currentPage) {
+            currentPage.classList.add("active");
+          }
+
+          // Initiera funktionalitet för just den sidan
+          initPageInteractions(pageId);
+        });
+      });
+
+      function initPageInteractions(pageId) {
+        const page = document.getElementById(`${pageId}-page`);
+        if (!page) return;
+
+        const timelineItems = page.querySelectorAll(".timeline-item");
+        const contentSections = page.querySelectorAll(".content-section");
+        const bannerContainer = page.querySelector(".banner-container");
+
+        // Visa första sektionen automatiskt (t.ex. #welcome)
+        contentSections.forEach((section) =>
+          section.classList.remove("active")
+        );
+        timelineItems.forEach((el) => el.classList.remove("active"));
+
+        const firstItem = timelineItems[0];
+        const firstSectionId = firstItem?.getAttribute("data-section");
+        const firstSection = page.querySelector(`#${firstSectionId}`);
+        if (firstItem && firstSection) {
+          firstItem.classList.add("active");
+          firstSection.classList.add("active");
+          toggleBanner(firstSectionId);
+        }
+
+        // Visa alltid employee-timeline om vi är på chefs-sidan
+        const employeeTimeline = document.querySelector("#employee-timeline");
+        if (pageId === "manager" && employeeTimeline) {
+          employeeTimeline.style.display = "block";
+        }
+
+        timelineItems.forEach((item) => {
+          const sectionId = item.getAttribute("data-section");
+
+          // Skapa checkbox om den inte redan finns
+          if (!item.querySelector("input[type='checkbox']")) {
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.style.marginRight = "6px";
+            item.prepend(checkbox);
+
+            checkbox.addEventListener("change", () => {
+              const popup = page.querySelector(`#${sectionId} .pulse-check`);
+              if (!popup) return;
+              popup.style.display = checkbox.checked ? "block" : "none";
+              if (checkbox.checked) {
+                popup.scrollIntoView({ behavior: "smooth", block: "center" });
+              }
+            });
+          }
+
+          // Skapa feedback-popup om den inte redan finns
+          const section = page.querySelector(`#${sectionId}`);
+          if (section && !section.querySelector(".pulse-check")) {
+            const popup = document.createElement("div");
+            popup.classList.add("pulse-check");
+            popup.innerHTML = `
+          <h3>Hur gick det med steget: ${item.innerText.trim()}</h3>
+          <p>Fyll i din feedback för detta moment.</p>
+          <div class="slider-container">
+            <label>Jag förstod innehållet:</label>
+            <input type="range" min="1" max="5" value="3" class="slider" />
+          </div>
+          <button class="btn">Skicka svar</button>
+        `;
+            popup.style.display = "none";
+            section.appendChild(popup);
+          }
+
+          // Klick på punkt i tidslinje
+          item.addEventListener("click", () => {
+            timelineItems.forEach((el) => el.classList.remove("active"));
+            item.classList.add("active");
+
+            contentSections.forEach((section) =>
+              section.classList.remove("active")
+            );
+
+            const current = page.querySelector(`#${sectionId}`);
+            if (current) {
+              current.classList.add("active");
+              toggleBanner(sectionId);
+            }
+          });
+        });
+
+        function toggleBanner(sectionId) {
+          if (!bannerContainer) return;
+          bannerContainer.style.display =
+            sectionId === "welcome" ? "flex" : "none";
+        }
+      }
+
+      // Visa första sidan direkt
+      const firstPageId = "employee";
+      document.getElementById(`${firstPageId}-page`)?.classList.add("active");
+      document
+        .querySelector(`.nav-link[data-page="${firstPageId}"]`)
+        ?.classList.add("active");
+      initPageInteractions(firstPageId);
+    });
+
+    function showManagerDetails() {
+      document
+        .getElementById("manager-overview-page")
+        .classList.remove("active");
+      document.getElementById("manager-page").classList.add("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const navManagerLink = document.querySelector(
+        ".nav-link[data-page='manager']"
+      );
+      navManagerLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .getElementById("manager-overview-page")
+          .classList.add("active");
+        document
+          .querySelectorAll(".nav-link")
+          .forEach((l) => l.classList.remove("active"));
+        navManagerLink.classList.add("active");
+      });
+    });
+  </script>
+</html>
